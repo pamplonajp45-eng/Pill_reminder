@@ -1,0 +1,13 @@
+jpdev-pill-reminder--
+
+PLAN: So users must add some medicine, and delete or edit it , 
+users can type what medicine can be add, users must be notified a certain times.
+
+I must:
+-display a list of pilss
+-user can add pilss, 
+-I will store the pills at (local.Storage-- backend).
+-it must trigger a reminder.with sound or notification.
+- consistency calendar, 
+-------------------------------------------------
+put input, button and list of pill div.
