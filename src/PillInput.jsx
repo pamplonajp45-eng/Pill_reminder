@@ -9,26 +9,23 @@ export default function PillInput() {
     if (pills.length > 0) {
       console.log("Pills updated:");
     }
-  }, [pills, pillName]);
+  }, [pills]);
 
   function handleAddPill() {
-    //  BUG 2: Stale state usage
-    setPills([...pills, pillName]);
-    pills.trim(pillName); 
-    //  BUG 3: Clearing before validation
+    if(!pillName.trim()) return; 
+    setPills (prevPills => [...prevPills, pillName.trim()]);     //  BUG 2: Stale state usage                                //  BUG 3: Clearing before validation
     setPillName("");
-  }
+  };
+  
 
-  function handleDeletePill() {    
-    setPills.splice({...pills, value: ""});        //  BUG 4: Mutating state directly
-    pills.splice(); 
-    setPills("pills");
+    function handleDeletePill(index) {    // BUG 4: Mutating state directly
+    setPills(prevPills =>
+    prevPills.filter((_, i) => i !== index)
+   );
   }
 
   return (
     <div>
-      <h2>Add Pill</h2>
-
       <input
         type="text"
         value={pillName}
