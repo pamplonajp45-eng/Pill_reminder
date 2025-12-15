@@ -1,26 +1,29 @@
 import { useState } from "react";
+
 import PillInput from "./PillInput";
+import PillList from "./PillList";
 
+export default function App() {
+  const [pills, setPills] = useState ([]);
 
-export default function App(){
-  const[pills, setPills] = useState ([]);
+  function addPill(pill) {
+    setPills(prev => [...prev, pill]);
+  }
 
-  const addPill = (name) => {
-    setPills((prev) => [...prev, {id:Date.now(), name}]);
-  };
+  function deletePill(index) {
+    setPills(prev => prev.filter((_,i) => i !== index));
+  }
 
-  return(
-  <div>
-    <h1>PILL REMINDER</h1>
-    <PillInput onAdd={addPill}/>
-    <ul>
-    {pills.map((pill) => (
-       <li key={pill.id}> {pill.name} </li>
-      ))}
-     </ul>
+  return (
+    <div>
+      <h1>Pill Reminder</h1>
+      
+
+      <PillInput
+        onAdd={addPill}  />
+      <PillList
+        pills={pills}
+        onDelete={deletePill} />
     </div>
-
   );
 }
-
-
