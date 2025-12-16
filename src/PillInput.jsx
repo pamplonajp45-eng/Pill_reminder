@@ -16,6 +16,7 @@ export default function PillInput({onAdd}) {
         placeholder="type heree..."
         value={pillName}
         onChange={(e) => setPillName(e.target.value)}
+        onKeyPress={(e) => e.key === 'Enter' && handleAdd()}
       />
       <button onClick={handleAdd}>Add</button>
     </div>

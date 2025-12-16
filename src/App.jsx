@@ -1,29 +1,38 @@
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
 import PillInput from "./PillInput";
 import PillList from "./PillList";
 
 export default function App() {
-  const [pills, setPills] = useState ([]);
+const [pills, setPills] = useState(() => {
+    const saved = localStorage.getItem("pills");
+    return saved ? JSON.parse(saved) : [];
+  });
 
-  function addPill(pill) {
+useEffect(() => {
+  localStorage.setItem("pills", JSON.stringify(pills));
+  }, [pills]);
+
+function addPill(pill) {
     setPills(prev => [...prev, pill]);
   }
 
-  function deletePill(index) {
+function deletePill(index) {
     setPills(prev => prev.filter((_,i) => i !== index));
   }
 
-  return (
+return (
     <div>
       <h1>Pill Reminder</h1>
       
 
       <PillInput
         onAdd={addPill}  />
-      <PillList
+        {pills.length === 0 ? (
+          <p>No pills added yet...</p>
+        ):(<PillList
         pills={pills}
-        onDelete={deletePill} />
+        onDelete={deletePill} />)}
+      
     </div>
   );
 }
