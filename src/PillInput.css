@@ -1,0 +1,133 @@
+.pill-input {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 30px;
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.pill-input h3 {
+  margin: 0;
+  color: #4CAF50;
+}
+
+.pill-input input[type="text"],
+.pill-input input[type="time"] {
+  padding: 12px;
+  font-size: 16px;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.pill-input input:focus {
+  border-color: #4CAF50;
+}
+
+.time-slots {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.time-slots label {
+  font-weight: bold;
+  color: #333;
+}
+
+.time-slot {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.time-slot input {
+  flex: 1;
+}
+
+.remove-time {
+  padding: 8px 12px;
+  background: #ff5252;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.add-time {
+  padding: 10px;
+  background: #2196F3;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+
+.add-time:hover {
+  background: #1976D2;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  color: #2196F3;
+}
+
+.checkbox-label input {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+}
+
+.submit-btn,
+.cancel-btn {
+  flex: 1;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.submit-btn {
+  background: #4CAF50;
+  color: white;
+}
+
+.submit-btn:hover {
+  background: #45a049;
+}
+
+.cancel-btn {
+  background: #999;
+  color: white;
+}
+
+.cancel-btn:hover {
+  background: #777;
+}
+.error-message {
+  padding: 10px;
+  background: #ffebee;
+  color: #c62828;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: bold;
+}

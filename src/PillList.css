@@ -1,0 +1,140 @@
+.pill-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.pill-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  margin-bottom: 15px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s;
+}
+
+.pill-list li:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.pill-list li.taken {
+  opacity: 0.7;
+  background: #e8f5e9;
+}
+
+.pill-main-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pill-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.pill-name {
+  font-weight: bold;
+  font-size: 20px;
+  color: #333;
+}
+
+.pill-dosage {
+  font-size: 14px;
+  color: #666;
+  background: #f0f0f0;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.pill-times {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.pill-time {
+  font-size: 14px;
+  color: #666;
+  background: #fff3e0;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.recurring-badge {
+  font-size: 12px;
+  color: #2196F3;
+  background: #e3f2fd;
+  padding: 4px 8px;
+  border-radius: 4px;
+  width: fit-content;
+}
+
+.taken-badge {
+  font-size: 12px;
+  color: #4CAF50;
+  background: #e8f5e9;
+  padding: 4px 8px;
+  border-radius: 4px;
+  width: fit-content;
+}
+
+.pill-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.action-btn {
+  padding: 10px 14px;
+  font-size: 18px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.taken-btn {
+  background: #4CAF50;
+  color: white;
+}
+
+.taken-btn:hover {
+  background: #45a049;
+  transform: scale(1.1);
+}
+
+.snooze-btn {
+  background: #FF9800;
+  color: white;
+}
+
+.snooze-btn:hover {
+  background: #F57C00;
+  transform: scale(1.1);
+}
+
+.edit-btn {
+  background: #2196F3;
+  color: white;
+}
+
+.edit-btn:hover {
+  background: #1976D2;
+  transform: scale(1.1);
+}
+
+.delete-btn {
+  background: #f44336;
+  color: white;
+}
+
+.delete-btn:hover {
+  background: #d32f2f;
+  transform: scale(1.1);
+}
