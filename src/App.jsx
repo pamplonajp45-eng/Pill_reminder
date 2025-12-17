@@ -25,25 +25,6 @@ export default function App() {
   const [editingPill, setEditingPill] = useState(null);
   const [showHistory, setShowHistory] = useState(false);
 
-  useEffect(() => {
-  // Register service worker
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker
-      .register('/service-worker.js')
-      .then(registration => {
-        console.log('Service Worker registered:', registration);
-      })
-      .catch(error => {
-        console.log('Service Worker registration failed:', error);
-      });
-  }
-
-  // Request notification permission
-  if (Notification.permission !== "granted") {
-    Notification.requestPermission();
-  }
-}, []);
-
   // Request notification permission
   useEffect(() => {
     if (Notification.permission !== "granted") {
