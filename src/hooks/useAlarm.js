@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 
 export function useAlarm(pills, onPillTaken, onPillSnoozed) {
   const [snoozedPills, setSnoozedPills] = useState({});
@@ -18,7 +18,7 @@ export function useAlarm(pills, onPillTaken, onPillSnoozed) {
         });
     }
 
-    // Setup audio
+    
     audioRef.current = new Audio("/reminder2.mp3");
     audioRef.current.volume = 1.0;
     audioRef.current.preload = "auto";
@@ -28,7 +28,7 @@ export function useAlarm(pills, onPillTaken, onPillSnoozed) {
         audioRef.current.pause();
         audioRef.current.currentTime = 0;
       }).catch(() => {
-        console.log("Audio not yet enabled");
+        console.log("Audio not enabled yet.");
       });
     };
 
@@ -100,10 +100,14 @@ export function useAlarm(pills, onPillTaken, onPillSnoozed) {
       navigator.vibrate([200, 100, 200, 100, 200]);
     }
 
-    // Show notification with system sound
-    if (Notification.permission === "granted") {
-      const dosageText = pill.dosage ? ` (${pill.dosage})` : "";
-      
+    useEffect(() => {
+      if ('Notification' in window && Notification.permission === "default") {
+        Notification.requestPermission().then(permission => {
+          console.log('Permission:', permission);
+        });
+      }
+    }, []);
+
       const notification = new Notification("💊 Pill Reminder!", {
         body: `Time to take ${pill.name}${dosageText}`,
         icon: "/icon-192.png", // Add an icon
@@ -139,7 +143,7 @@ export function useAlarm(pills, onPillTaken, onPillSnoozed) {
     }, 500);
   }
 
-  function stopAudio() {
+  const stopAudio = useCallback(() =>{
     const audio = audioRef.current;
     if (!audio) return;
 
@@ -150,7 +154,7 @@ export function useAlarm(pills, onPillTaken, onPillSnoozed) {
       audio.removeEventListener('timeupdate', audio._loopHandler);
       audio._loopHandler = null;
     }
-  }
+  }, []);
 
   function snooze(pillId, minutes) {
     const now = new Date();
@@ -178,4 +182,3 @@ export function useAlarm(pills, onPillTaken, onPillSnoozed) {
     snooze,
     clearSnooze
   };
-}
