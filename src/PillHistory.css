@@ -1,84 +1,100 @@
 .pill-history {
-  background: white;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 0.5rem 0;
 }
 
 .history-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
-  padding-bottom: 15px;
-  border-bottom: 2px solid #f0f0f0;
+  margin-bottom: 2rem;
 }
 
 .history-header h2 {
-  margin: 0;
-  color: #333;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-main);
 }
 
 .clear-history {
+  background: #f0f0f0;
+  color: var(--text-muted);
   padding: 8px 16px;
-  background: #f44336;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background 0.3s;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .clear-history:hover {
-  background: #d32f2f;
+  background: #e5e7eb;
+  color: var(--text-main);
 }
 
 .history-list {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 12px;
 }
 
 .history-entry {
-  padding: 15px;
-  background: #f9f9f9;
-  border-left: 4px solid #4CAF50;
-  border-radius: 6px;
+  background: white;
+  padding: 1.25rem;
+  border-radius: 16px;
+  border: 1px solid #f0f0f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
 }
 
-.history-pill-name {
-  font-weight: bold;
-  font-size: 18px;
-  color: #333;
+.history-pill-info {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
   margin-bottom: 8px;
 }
 
+.history-pill-name {
+  font-weight: 700;
+  color: var(--text-main);
+  font-size: 1.1rem;
+}
+
 .history-dosage {
-  font-weight: normal;
-  font-size: 14px;
-  color: #666;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 500;
 }
 
 .history-details {
   display: flex;
   flex-direction: column;
-  gap: 5px;
-  font-size: 14px;
-  color: #666;
+  gap: 4px;
+}
+
+.history-time,
+.history-scheduled {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .history-time {
-  color: #4CAF50;
-}
-
-.history-scheduled {
-  color: #999;
+  font-weight: 600;
+  color: var(--text-main);
 }
 
 .history-empty {
   text-align: center;
-  padding: 60px 20px;
-  color: #999;
-  font-size: 18px;
+  padding: 4rem 2rem;
+  color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.history-empty p {
+  font-size: 1.1rem;
+  font-style: italic;
 }

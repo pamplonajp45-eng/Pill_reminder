@@ -1,46 +1,205 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, } from "react";
 
-export function useAlarm(pills, onPillTaken, onPillSnoozed) {
+const VIBRATION_PATTERN = [200, 100, 200, 100, 200];
+const DIALOG_DELAY_MS = 500;
+
+export function useAlarm(pills, onPillTaken, onPillSnoozed, options = {}) {
+  const {
+    audioUrl = "reminder4.mp3",
+    snoozeDurationMinutes = 10,
+    audioLoopDurationSeconds = 9,
+    enableServiceWorker = false
+  } = options;
+
   const [snoozedPills, setSnoozedPills] = useState({});
   const [triggeredAlarms, setTriggeredAlarms] = useState({});
+  const [isAudioEnabled, setIsAudioEnabled] = useState(false);
+
   const audioRef = useRef(null);
+  const activeAlarmRef = useRef(null);
+
+  const stopAudio = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    audio.pause();
+    audio.currentTime = 0;
+    if (audio._loopHandler) {
+      audio.removeEventListener('timeupdate', audio._loopHandler);
+      audio._loopHandler = null;
+    }
+  }, []);
+
+  const clearSnooze = useCallback((pillId) => {
+    setSnoozedPills(prev => {
+      const newSnoozed = { ...prev };
+      delete newSnoozed[pillId];
+      return newSnoozed;
+    });
+  }, []);
+
+  const snooze = useCallback((pillId, minutes = snoozeDurationMinutes) => {
+    const now = new Date();
+    now.setMinutes(now.getMinutes() + minutes);
+    const snoozeTime = now.toTimeString().slice(0, 5);
+
+    setSnoozedPills(prev => ({
+      ...prev,
+      [pillId]: snoozeTime
+    }));
+
+    return snoozeTime;
+  }, [snoozeDurationMinutes]);
 
   useEffect(() => {
-    // Register service worker for better mobile support
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker
-        .register('/service-worker.js')
-        .then(registration => {
-          console.log('Service Worker registered');
-        })
-        .catch(error => {
-          console.log('Service Worker registration failed:', error);
-        });
-    }
+    return () => {
+      activeAlarmRef.current = null;
+      stopAudio();
+    };
+  }, [stopAudio]);
 
-    
-    audioRef.current = new Audio("/reminder2.mp3");
-    audioRef.current.volume = 1.0;
-    audioRef.current.preload = "auto";
+  // Audio Preload & Enable
+  useEffect(() => {
+    const audio = new Audio(audioUrl);
+    audio.volume = 1.0;
+    audio.preload = "auto";
+    audioRef.current = audio;
 
     const enableAudio = () => {
-      audioRef.current.play().then(() => {
-        audioRef.current.pause();
-        audioRef.current.currentTime = 0;
-      }).catch(() => {
-        console.log("Audio not enabled yet.");
+      audio.play().then(() => {
+        audio.pause();
+        audio.currentTime = 0;
+        setIsAudioEnabled(true);
+        console.log("Audio enabled for alarms");
+      }).catch(err => {
+        console.log("Audio could not be enabled:", err);
       });
     };
 
-    document.addEventListener('click', enableAudio, { once: true });
+    const events = ['click', 'touchstart', 'keydown'];
+    events.forEach(event => {
+      document.addEventListener(event, enableAudio, { once: true });
+    });
 
     return () => {
-      document.removeEventListener('click', enableAudio);
-      if (audioRef.current) {
-        audioRef.current.pause();
-      }
+      events.forEach(event => {
+        document.removeEventListener(event, enableAudio);
+      });
+      audio.pause();
+      audio.src = '';
     };
+  }, [audioUrl]);
+
+  // Persistent Reset for Triggered Alarms
+  useEffect(() => {
+    const today = new Date().toDateString();
+    const lastAlarmReset = localStorage.getItem("lastAlarmResetDate");
+
+    if (lastAlarmReset !== today) {
+      setTriggeredAlarms({});
+      localStorage.setItem("lastAlarmResetDate", today);
+    }
   }, []);
+
+  const triggerAlarm = useCallback((pill) => {
+    if (activeAlarmRef.current) {
+      console.log("An alarm is already active, skipping new alarm for", pill.name);
+      return;
+    }
+
+    activeAlarmRef.current = pill.id;
+
+    const audio = audioRef.current;
+    if (audio && (audio.paused || audio.ended)) {
+      audio.currentTime = 0;
+      audio.loop = false;
+
+      audio.play().catch(err => {
+        console.log("Audio playback failed:", err);
+      });
+
+      const handleTimeUpdate = () => {
+        if (audio.currentTime >= audioLoopDurationSeconds && !audio.paused) {
+          audio.currentTime = 0;
+        }
+      };
+
+      if (audio._loopHandler) {
+        audio.removeEventListener('timeupdate', audio._loopHandler);
+      }
+      audio.addEventListener('timeupdate', handleTimeUpdate);
+      audio._loopHandler = handleTimeUpdate;
+    }
+
+    if ('vibrate' in navigator) {
+      navigator.vibrate(VIBRATION_PATTERN);
+    }
+
+    if ('Notification' in window && Notification.permission === "granted") {
+      const dosageText = pill.dosage ? ` (${pill.dosage})` : "";
+
+      // Use Service Worker registration for "real" notifications with actions
+      if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+        navigator.serviceWorker.ready.then(registration => {
+          registration.showNotification("💊 Pill Reminder!", {
+            body: `Time to take ${pill.name}${dosageText}`,
+            icon: "/icon-192.png",
+            badge: "/icon-192.png",
+            requireInteraction: true,
+            tag: `pill-${pill.id}`,
+            data: { pillId: pill.id },
+            vibrate: VIBRATION_PATTERN,
+            silent: false,
+            actions: [
+              { action: 'take', title: 'I took it', icon: '/icon-192.png' },
+              { action: 'snooze', title: `Snooze (${snoozeDurationMinutes}m)`, icon: '/icon-192.png' }
+            ]
+          });
+        });
+      } else {
+        // Fallback to basic notification if SW not ready
+        const notification = new Notification("💊 Pill Reminder!", {
+          body: `Time to take ${pill.name}${dosageText}`,
+          icon: "/icon-192.png",
+          badge: "/icon-192.png",
+          requireInteraction: true,
+          tag: `pill-${pill.id}`,
+          vibrate: VIBRATION_PATTERN,
+          silent: false
+        });
+        notification.onclick = () => {
+          window.focus();
+          notification.close();
+        };
+      }
+    }
+
+    setTimeout(() => {
+      const dosageText = pill.dosage ? ` (${pill.dosage})` : "";
+      const userResponse = window.confirm(
+        `💊 ${pill.name}${dosageText}\n\nOK = I took it\nCancel = ${snoozeDurationMinutes} min snooze`
+      );
+
+      stopAudio();
+      activeAlarmRef.current = null;
+
+      if (userResponse) {
+        onPillTaken(pill);
+        clearSnooze(pill.id);
+      } else {
+        const snoozeTime = snooze(pill.id, snoozeDurationMinutes);
+        onPillSnoozed(pill, snoozeTime);
+      }
+    }, DIALOG_DELAY_MS);
+  }, [
+    audioLoopDurationSeconds,
+    snoozeDurationMinutes,
+    onPillTaken,
+    onPillSnoozed,
+    clearSnooze,
+    snooze,
+    stopAudio
+  ]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -51,18 +210,18 @@ export function useAlarm(pills, onPillTaken, onPillSnoozed) {
         if (!pill.times || !Array.isArray(pill.times)) return;
 
         pill.times.forEach(time => {
-          const alarmKey = `${pill.id}-${time}`;
-          
-          const shouldTrigger =
-            (time === currentTime && !pill.takenToday) ||
-            snoozedPills[pill.id] === currentTime;
+          if (typeof time !== 'string' || !/^\d{2}:\d{2}$/.test(time)) return;
 
-          if (shouldTrigger && triggeredAlarms[alarmKey] !== currentTime) {
+          const alarmKey = `${pill.id}-${time}`;
+          const isScheduledTime = time === currentTime && !pill.takenToday;
+          const isSnoozedTime = snoozedPills[pill.id] === currentTime;
+          const notTriggeredYet = triggeredAlarms[alarmKey] !== currentTime;
+
+          if ((isScheduledTime || isSnoozedTime) && notTriggeredYet) {
             setTriggeredAlarms(prev => ({
               ...prev,
               [alarmKey]: currentTime
             }));
-            
             triggerAlarm(pill);
           }
         });
@@ -70,115 +229,62 @@ export function useAlarm(pills, onPillTaken, onPillSnoozed) {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [pills, snoozedPills, triggeredAlarms]);
+  }, [pills, snoozedPills, triggeredAlarms, triggerAlarm]);
 
-  function triggerAlarm(pill) {
-    const audio = audioRef.current;
+  // Listen for actions from Service Worker
+  useEffect(() => {
+    const handleMessage = (event) => {
+      if (event.data && event.data.type === 'NOTIFICATION_ACTION') {
+        const { action, pillId } = event.data;
+        const pill = pills.find(p => p.id === pillId);
 
-    // Try to play audio (works on desktop, often blocked on mobile)
-    if (audio && (audio.paused || audio.ended)) {
-      audio.currentTime = 0;
-      audio.loop = false;
-      audio.play().catch(err => {
-        console.log("Audio playback blocked on mobile:", err);
-      });
-
-      const loopDuration = 7;
-      const handleTimeUpdate = () => {
-        if (audio.currentTime >= loopDuration) {
-          audio.currentTime = 0;
+        if (pill) {
+          stopAudio();
+          if (action === 'take') {
+            onPillTaken(pill);
+            clearSnooze(pill.id);
+          } else if (action === 'snooze') {
+            const snoozeTime = snooze(pill.id, snoozeDurationMinutes);
+            onPillSnoozed(pill, snoozeTime);
+          }
         }
-      };
-
-      audio.addEventListener('timeupdate', handleTimeUpdate);
-      audio._loopHandler = handleTimeUpdate;
-    }
-
-    // Vibrate phone (works on mobile!)
-    if ('vibrate' in navigator) {
-      // Vibrate pattern: vibrate 200ms, pause 100ms, repeat 3 times
-      navigator.vibrate([200, 100, 200, 100, 200]);
-    }
-
-    useEffect(() => {
-      if ('Notification' in window && Notification.permission === "default") {
-        Notification.requestPermission().then(permission => {
-          console.log('Permission:', permission);
-        });
       }
-    }, []);
+    };
 
-      const notification = new Notification("💊 Pill Reminder!", {
-        body: `Time to take ${pill.name}${dosageText}`,
-        icon: "/icon-192.png", // Add an icon
-        badge: "/icon-192.png",
-        requireInteraction: true,
-        tag: `pill-${pill.id}`,
-        vibrate: [200, 100, 200, 100, 200], // Vibration pattern
-        silent: false // Use system notification sound
-      });
-
-      notification.onclick = () => {
-        window.focus();
-        notification.close();
-      };
+    if (navigator.serviceWorker) {
+      navigator.serviceWorker.addEventListener('message', handleMessage);
+      return () => navigator.serviceWorker.removeEventListener('message', handleMessage);
     }
-
-    // Show dialog (only works if app is open)
-    setTimeout(() => {
-      const dosageText = pill.dosage ? ` (${pill.dosage})` : "";
-      const userResponse = window.confirm(
-        `💊 ${pill.name}${dosageText}\n\nOK = I took it\nCancel = Snooze 10 min`
-      );
-
-      stopAudio();
-
-      if (userResponse) {
-        onPillTaken(pill);
-        clearSnooze(pill.id);
-      } else {
-        snooze(pill.id, 10);
-        onPillSnoozed(pill);
-      }
-    }, 500);
-  }
-
-  const stopAudio = useCallback(() =>{
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    audio.pause();
-    audio.currentTime = 0;
-
-    if (audio._loopHandler) {
-      audio.removeEventListener('timeupdate', audio._loopHandler);
-      audio._loopHandler = null;
-    }
-  }, []);
-
-  function snooze(pillId, minutes) {
-    const now = new Date();
-    now.setMinutes(now.getMinutes() + minutes);
-    const snoozeTime = now.toTimeString().slice(0, 5);
-
-    setSnoozedPills(prev => ({
-      ...prev,
-      [pillId]: snoozeTime
-    }));
-
-    alert(`Snoozed for ${minutes} minutes. Will remind you at ${snoozeTime}`);
-  }
-
-  function clearSnooze(pillId) {
-    setSnoozedPills(prev => {
-      const newSnoozed = { ...prev };
-      delete newSnoozed[pillId];
-      return newSnoozed;
-    });
-  }
+  }, [pills, onPillTaken, onPillSnoozed, clearSnooze, snooze, snoozeDurationMinutes, stopAudio]);
 
   return {
     snoozedPills,
+    isAudioEnabled,
     snooze,
-    clearSnooze
+    clearSnooze,
+    stopAudio
   };
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

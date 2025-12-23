@@ -1,7 +1,14 @@
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { FaPlus, FaTrash, FaCheck, FaTimes } from "react-icons/fa";
 import "./PillInput.css";
 
-export default function PillInput({ onAdd, editingPill, onUpdate, onCancelEdit }) {
+export default function PillInput({
+  onAdd,
+  editingPill,
+  onUpdate,
+  onCancelEdit,
+}) {
   const [pillName, setPillName] = useState("");
   const [pillTimes, setPillTimes] = useState([""]);
   const [dosage, setDosage] = useState("");
@@ -18,13 +25,12 @@ export default function PillInput({ onAdd, editingPill, onUpdate, onCancelEdit }
   }, [editingPill]);
 
   function handleSubmit() {
-    // Validation
     if (!pillName.trim()) {
       setError("Pill name is required");
       return;
     }
-    
-    if (pillTimes.some(t => !t)) {
+
+    if (pillTimes.some((t) => !t)) {
       setError("All time slots must be filled");
       return;
     }
@@ -33,7 +39,7 @@ export default function PillInput({ onAdd, editingPill, onUpdate, onCancelEdit }
       name: pillName.trim(),
       times: pillTimes,
       dosage: dosage.trim(),
-      recurring: recurring
+      recurring: recurring,
     };
 
     if (editingPill) {
@@ -51,11 +57,11 @@ export default function PillInput({ onAdd, editingPill, onUpdate, onCancelEdit }
     setDosage("");
     setRecurring(true);
     setError("");
+    if (editingPill) onCancelEdit();
   }
 
   function handleCancel() {
     resetForm();
-    onCancelEdit();
   }
 
   function addTimeSlot() {
@@ -70,76 +76,104 @@ export default function PillInput({ onAdd, editingPill, onUpdate, onCancelEdit }
     const newTimes = [...pillTimes];
     newTimes[index] = value;
     setPillTimes(newTimes);
-    setError(""); // Clear error on input
+    setError("");
   }
 
   return (
-    <div className="pill-input">
-      {editingPill && <h3>✏️ Edit Pill</h3>}
-      
-      {error && <div className="error-message">{error}</div>}
-      
-      <input
-        type="text"
-        placeholder="Enter pill name..."
-        value={pillName}
-        onChange={(e) => {
-          setPillName(e.target.value);
-          setError("");
-        }}
-      />
+    <motion.div
+      className="pill-input-container"
+      layout
+    >
+      <div className="pill-input">
+        {editingPill ? <h3>Edit Pill</h3> : <h3>Add New Pill</h3>}
 
-      <input
-        type="text"
-        placeholder="Dosage (e.g., 500mg, 2 tablets)..."
-        value={dosage}
-        onChange={(e) => setDosage(e.target.value)}
-      />
-
-      <div className="time-slots">
-        <label>⏰ Reminder Time(s):</label>
-        {pillTimes.map((time, index) => (
-          <div key={index} className="time-slot">
-            <input
-              type="time"
-              value={time}
-              onChange={(e) => updateTime(index, e.target.value)}
-            />
-            {pillTimes.length > 1 && (
-              <button
-                type="button"
-                className="remove-time"
-                onClick={() => removeTimeSlot(index)}
-              >
-                ❌
-              </button>
-            )}
-          </div>
-        ))}
-        <button type="button" className="add-time" onClick={addTimeSlot}>
-          + Add Another Time
-        </button>
-      </div>
-
-      <label className="checkbox-label">
-        <input
-          type="checkbox"
-          checked={recurring}
-          onChange={(e) => setRecurring(e.target.checked)}
-        />
-        📅 Daily reminder
-      </label>
-
-      <div className="button-group">
-        <button className="submit-btn" onClick={handleSubmit}>
-          {editingPill ? "Update Pill" : "Add Pill"}
-        </button>
-        {editingPill && (
-          <button className="cancel-btn" onClick={handleCancel}>
-            Cancel
-          </button>
+        {error && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="error-message"
+          >
+            {error}
+          </motion.div>
         )}
+
+        <div className="input-group">
+          <label>Pill Name</label>
+          <input
+            type="text"
+            placeholder="e.g., Vitamin C"
+            value={pillName}
+            onChange={(e) => {
+              setPillName(e.target.value);
+              setError("");
+            }}
+          />
+        </div>
+
+        <div className="input-group">
+          <label>Dosage</label>
+          <input
+            type="text"
+            placeholder="e.g., 500mg"
+            value={dosage}
+            onChange={(e) => setDosage(e.target.value)}
+          />
+        </div>
+
+        <div className="time-slots">
+          <label>⏰ Reminder Time(s)</label>
+          <AnimatePresence>
+            {pillTimes.map((time, index) => (
+              <motion.div
+                key={index}
+                className="time-slot"
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 10 }}
+              >
+                <input
+                  type="time"
+                  value={time}
+                  onChange={(e) => updateTime(index, e.target.value)}
+                />
+                {pillTimes.length > 1 && (
+                  <button
+                    type="button"
+                    className="remove-time"
+                    onClick={() => removeTimeSlot(index)}
+                  >
+                    <FaTimes />
+                  </button>
+                )}
+              </motion.div>
+            ))}
+          </AnimatePresence>
+          <button type="button" className="add-time" onClick={addTimeSlot}>
+            <FaPlus /> Add Time Slot
+          </button>
+        </div>
+
+        <label className="checkbox-label">
+          <input
+            type="checkbox"
+            checked={recurring}
+            onChange={(e) => setRecurring(e.target.checked)}
+          />
+          <span>Daily reminder</span>
+        </label>
+
+        <div className="button-group">
+          <button className="submit-btn" onClick={handleSubmit}>
+            {editingPill ? <><FaCheck /> Update Pill</> : <><FaPlus /> Add Pill</>}
+          </button>
+          {editingPill && (
+            <button className="cancel-btn" onClick={handleCancel}>
+              <FaTimes /> Cancel
+            </button>
+          )}
+        </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
+

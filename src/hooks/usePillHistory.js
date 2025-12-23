@@ -18,9 +18,9 @@ export function usePillHistory() {
       dosage: pill.dosage,
       scheduledTimes: pill.times,
       takenAt: new Date().toLocaleString(),
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
-    setHistory(prev => [historyEntry, ...prev]);
+    setHistory((prev) => [historyEntry, ...prev]);
   }
 
   function clearHistory() {
@@ -32,6 +32,6 @@ export function usePillHistory() {
   return {
     history,
     addHistory,
-    clearHistory
+    clearHistory,
   };
 }

@@ -5,136 +5,150 @@
 }
 
 .pill-list li {
+  background: white;
+  border-radius: 16px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px;
-  margin-bottom: 15px;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  border: 1px solid #f0f0f0;
+  transition: all 0.3s ease;
 }
 
 .pill-list li:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
 }
 
 .pill-list li.taken {
   opacity: 0.7;
-  background: #e8f5e9;
+  border-left: 5px solid var(--primary);
+  background: #f9fff9;
 }
 
 .pill-main-info {
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
 }
 
 .pill-header {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 6px;
 }
 
 .pill-name {
-  font-weight: bold;
-  font-size: 20px;
-  color: #333;
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: var(--text-main);
 }
 
 .pill-dosage {
-  font-size: 14px;
-  color: #666;
-  background: #f0f0f0;
-  padding: 4px 8px;
-  border-radius: 4px;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  font-weight: 500;
 }
 
 .pill-times {
   display: flex;
-  gap: 10px;
   flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
 }
 
 .pill-time {
-  font-size: 14px;
-  color: #666;
-  background: #fff3e0;
-  padding: 4px 8px;
-  border-radius: 4px;
+  background: var(--glass-bg);
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--secondary);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid rgba(33, 150, 243, 0.1);
 }
 
-.recurring-badge {
-  font-size: 12px;
-  color: #2196F3;
-  background: #e3f2fd;
-  padding: 4px 8px;
-  border-radius: 4px;
-  width: fit-content;
+.pill-badges {
+  display: flex;
+  gap: 8px;
 }
 
-.taken-badge {
-  font-size: 12px;
-  color: #4CAF50;
-  background: #e8f5e9;
-  padding: 4px 8px;
-  border-radius: 4px;
-  width: fit-content;
+.badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.5px;
+}
+
+.badge.recurring {
+  background: rgba(255, 64, 129, 0.1);
+  color: var(--accent);
+}
+
+.badge.taken {
+  background: rgba(76, 175, 80, 0.1);
+  color: var(--primary);
 }
 
 .pill-actions {
   display: flex;
   gap: 8px;
+  margin-left: 1rem;
 }
 
 .action-btn {
-  padding: 10px 14px;
-  font-size: 18px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.3s;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  transition: all 0.2s ease;
 }
 
 .taken-btn {
-  background: #4CAF50;
+  background: var(--primary);
   color: white;
 }
 
 .taken-btn:hover {
-  background: #45a049;
-  transform: scale(1.1);
-}
-
-.snooze-btn {
-  background: #FF9800;
-  color: white;
-}
-
-.snooze-btn:hover {
-  background: #F57C00;
-  transform: scale(1.1);
+  background: var(--primary-dark);
+  box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
 }
 
 .edit-btn {
-  background: #2196F3;
-  color: white;
+  background: #f0f0f0;
+  color: var(--text-muted);
 }
 
 .edit-btn:hover {
-  background: #1976D2;
-  transform: scale(1.1);
+  background: #e0e0e0;
+  color: var(--text-main);
 }
 
 .delete-btn {
-  background: #f44336;
-  color: white;
+  background: #fff0f0;
+  color: var(--danger, #ff4444);
 }
 
 .delete-btn:hover {
-  background: #d32f2f;
-  transform: scale(1.1);
+  background: #ffe0e0;
+  box-shadow: 0 4px 10px rgba(255, 68, 68, 0.2);
+}
+
+@media (max-width: 480px) {
+  .pill-list li {
+    padding: 1rem;
+  }
+
+  .action-btn {
+    width: 36px;
+    height: 36px;
+  }
 }
