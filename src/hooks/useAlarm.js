@@ -141,27 +141,27 @@ export function useAlarm(pills, onPillTaken, onPillSnoozed, options = {}) {
 
       if (navigator.serviceWorker && navigator.serviceWorker.controller) {
         navigator.serviceWorker.ready.then(registration => {
-          registration.showNotification("🌙 LUNO", {
+          registration.showNotification("LUNO", {
             body: `Time to take ${pill.name}${dosageText}`,
-            icon: "/icon-192.png",
-            badge: "/icon-192.png",
+            icon: "LUNO.png",
+            badge: "LUNO.png",
             requireInteraction: true,
             tag: `pill-${pill.id}`,
             data: { pillId: pill.id },
             vibrate: VIBRATION_PATTERN,
             silent: false,
             actions: [
-              { action: 'take', title: 'I took it', icon: '/icon-192.png' },
-              { action: 'snooze', title: `Snooze (${snoozeDurationMinutes}m)`, icon: '/icon-192.png' }
+              { action: 'take', title: 'I took it', icon: 'LUNO.png' },
+              { action: 'snooze', title: `Snooze (${snoozeDurationMinutes}m)`, icon: 'LUNO.png' }
             ]
           });
         });
       } else {
 
-        const notification = new Notification("🌙 LUNO", {
+        const notification = new Notification(" LUNO", {
           body: `Time to take ${pill.name}${dosageText}`,
-          icon: "/icon-192.png",
-          badge: "/icon-192.png",
+          icon: "LUNO.png",
+          badge: "LUNO.png",
           requireInteraction: true,
           tag: `pill-${pill.id}`,
           vibrate: VIBRATION_PATTERN,

@@ -28,7 +28,6 @@ export default function App() {
   const [editingPill, setEditingPill] = useState(null);
   const [showHistory, setShowHistory] = useState(false);
 
-  // Request notification permission
   useEffect(() => {
     if ("Notification" in window && Notification.permission !== "granted") {
       Notification.requestPermission();

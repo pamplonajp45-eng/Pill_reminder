@@ -16,7 +16,7 @@ export default defineConfig({
       srcDir: 'src',
       filename: 'sw.js',
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg', 'reminder.mp3', 'reminder2.mp3', 'reminder3.mp3', 'reminder4.mp3'],
+      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg', 'LUNO.png', 'reminder.mp3', 'reminder2.mp3', 'reminder3.mp3', 'reminder4.mp3'],
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,mp3}'],
       },
@@ -27,17 +27,17 @@ export default defineConfig({
         theme_color: '#4CAF50',
         icons: [
           {
-            src: 'icon-192.png',
+            src: 'LUNO.png',
             sizes: '192x192',
             type: 'image/png'
           },
           {
-            src: 'icon-512.png',
+            src: 'LUNO.png',
             sizes: '512x512',
             type: 'image/png'
           },
           {
-            src: 'icon-512.png',
+            src: 'LUNO.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any maskable'
