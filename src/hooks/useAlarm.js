@@ -141,7 +141,7 @@ export function useAlarm(pills, onPillTaken, onPillSnoozed, options = {}) {
 
       if (navigator.serviceWorker && navigator.serviceWorker.controller) {
         navigator.serviceWorker.ready.then(registration => {
-          registration.showNotification("💊 Pill Reminder!", {
+          registration.showNotification("🌙 LUNO", {
             body: `Time to take ${pill.name}${dosageText}`,
             icon: "/icon-192.png",
             badge: "/icon-192.png",
@@ -158,7 +158,7 @@ export function useAlarm(pills, onPillTaken, onPillSnoozed, options = {}) {
         });
       } else {
 
-        const notification = new Notification("💊 Pill Reminder!", {
+        const notification = new Notification("🌙 LUNO", {
           body: `Time to take ${pill.name}${dosageText}`,
           icon: "/icon-192.png",
           badge: "/icon-192.png",

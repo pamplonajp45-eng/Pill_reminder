@@ -1,6 +1,6 @@
 {
-  "name": "Luno Pill Reminder",
-  "short_name": "Luno",
+  "name": "LUNO",
+  "short_name": "LUNO",
   "description": "Luno keeps you on track, quietly guiding you to take your meds on time.",
   "start_url": "/",
   "display": "standalone",

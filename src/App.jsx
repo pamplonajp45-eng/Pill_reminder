@@ -42,7 +42,7 @@ export default function App() {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
-        Pill Reminder
+        LUNO
       </motion.h1>
 
       <div className="tab-buttons">

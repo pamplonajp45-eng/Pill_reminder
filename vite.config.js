@@ -21,9 +21,9 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,ico,png,svg,mp3}'],
       },
       manifest: {
-        name: 'Pill Reminder',
-        short_name: 'Pills',
-        description: 'Never miss your pills again.',
+        name: 'LUNO',
+        short_name: 'LUNO',
+        description: 'Luno keeps you on track, quietly guiding you to take your meds on time.',
         theme_color: '#4CAF50',
         icons: [
           {
