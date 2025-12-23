@@ -17,16 +17,16 @@ export function usePills() {
     }));
   });
 
-  // Persist pills
+
   useEffect(() => {
     localStorage.setItem("pills", JSON.stringify(pills));
   }, [pills]);
 
-  // Robust Reset logic (handles app being closed at midnight)
+
   useEffect(() => {
     const checkReset = () => {
       const now = new Date();
-      const today = now.toDateString(); // e.g., "Mon Dec 22 2025"
+      const today = now.toDateString();
       const lastReset = localStorage.getItem("lastResetDate");
 
       if (lastReset !== today) {
@@ -38,10 +38,10 @@ export function usePills() {
       }
     };
 
-    // Check on mount
+
     checkReset();
 
-    // Check periodically (every minute)
+
     const interval = setInterval(checkReset, 60000);
     return () => clearInterval(interval);
   }, []);

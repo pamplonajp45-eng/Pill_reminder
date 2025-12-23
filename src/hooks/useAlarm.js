@@ -58,7 +58,7 @@ export function useAlarm(pills, onPillTaken, onPillSnoozed, options = {}) {
     };
   }, [stopAudio]);
 
-  // Audio Preload & Enable
+
   useEffect(() => {
     const audio = new Audio(audioUrl);
     audio.volume = 1.0;
@@ -90,7 +90,7 @@ export function useAlarm(pills, onPillTaken, onPillSnoozed, options = {}) {
     };
   }, [audioUrl]);
 
-  // Persistent Reset for Triggered Alarms
+
   useEffect(() => {
     const today = new Date().toDateString();
     const lastAlarmReset = localStorage.getItem("lastAlarmResetDate");
@@ -138,7 +138,7 @@ export function useAlarm(pills, onPillTaken, onPillSnoozed, options = {}) {
     if ('Notification' in window && Notification.permission === "granted") {
       const dosageText = pill.dosage ? ` (${pill.dosage})` : "";
 
-      // Use Service Worker registration for "real" notifications with actions
+
       if (navigator.serviceWorker && navigator.serviceWorker.controller) {
         navigator.serviceWorker.ready.then(registration => {
           registration.showNotification("💊 Pill Reminder!", {
@@ -157,7 +157,7 @@ export function useAlarm(pills, onPillTaken, onPillSnoozed, options = {}) {
           });
         });
       } else {
-        // Fallback to basic notification if SW not ready
+
         const notification = new Notification("💊 Pill Reminder!", {
           body: `Time to take ${pill.name}${dosageText}`,
           icon: "/icon-192.png",
