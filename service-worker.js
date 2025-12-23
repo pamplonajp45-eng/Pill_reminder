@@ -8,7 +8,7 @@ self.addEventListener('activate', (event) => {
   return self.clients.claim();
 });
 
-// Handle notification clicks
+
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
   event.waitUntil(
@@ -16,7 +16,7 @@ self.addEventListener('notificationclick', (event) => {
   );
 });
 
-// Keep service worker alive
+
 self.addEventListener('fetch', (event) => {
   event.respondWith(fetch(event.request));
 });
