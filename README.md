@@ -2,7 +2,7 @@
 
 **Luno keeps you on track, quietly guiding you to take your meds on time.**
 
-LUNO is a modern, minimalist companion for your wellness journey. The name is inspired by the Tagalog word for "calm" (adjacent to *alalay*) and "Luna" (moon), symbolizing guidance, cycles, and care. It’s designed to be a gentle, brandable, and Gen-Z-friendly reminder app that feels like a wellness companion rather than just a tool.
+LUNO is a modern, minimalist companion for your wellness journey. "Luna" (moon), symbolizing guidance, cycles, and care. It’s designed to be a gentle, brandable, and user-friendly reminder app that feels like a wellness companion rather than just a tool.
 
 ## Features
 
