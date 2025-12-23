@@ -1,18 +1,61 @@
-# React + Vite
+# 💊 Pill Reminder
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, responsive Progressive Web App (PWA) designed to help you never miss a dose. Manage your pill schedule, set smart alarms, and track your medication history with ease. Developed by **jpdev**.
 
-Currently, two official plugins are available:
+##  Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Pill Management**: Add, edit, and delete pill entries with name, dosage, and frequency.
+- **Smart Alarms**: Native-style notifications and audio reminders even when the app is in the background.
+- **Offline Mode**: Fully functional offline thanks to PWA technology. All data is persisted locally.
+- **Dose History**: Track which pills were taken and when.
+- **Modern UI**: Smooth animations powered by Framer Motion and a clean, responsive layout.
+- **Automatic Resets**: Daily status resets ensure you're ready for each new day.
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+- **Frontend**: [React](https://reactjs.org/) (Vite)
+- **Animations**: [Framer Motion](https://www.framer.com/motion/)
+- **Icons**: [React Icons](https://react-icons.github.io/react-icons/)
+- **PWA**: [vite-plugin-pwa](https://vite-pwa-org.netlify.app/)
+- **State Management**: Custom React Hooks (`usePills`, `useAlarm`, `usePillHistory`)
+- **Storage**: `localStorage`
 
-Note: This will impact Vite dev & build performances.
+##  Getting Started
 
-## Expanding the ESLint configuration
+### Prerequisites
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- [Node.js](https://nodejs.org/) (v18 or higher recommended)
+- `npm` or `yarn`
+
+### Installation
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/pamplonajp45-eng/Pill_reminder.git
+   cd Pill_reminder
+   ```
+
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
+
+3. **Start the development server**:
+   ```bash
+   npm run dev
+   ```
+
+4. **Build for production**:
+   ```bash
+   npm run build
+   ```
+
+## 📱 PWA Installation
+
+To install the app on your mobile device:
+- **iOS**: Open the app in Safari, tap the 'Share' icon, and select 'Add to Home Screen'.
+- **Android**: Open the app in Chrome, tap the menu (three dots), and select 'Install app'.
+
+## 📜 License
+
+This project is for personal use and portfolio demonstration. Created by jpdev.
