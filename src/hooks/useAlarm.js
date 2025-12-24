@@ -8,7 +8,8 @@ export function useAlarm(pills, onPillTaken, onPillSnoozed, options = {}) {
     audioUrl = "reminder4.mp3",
     snoozeDurationMinutes = 10,
     audioLoopDurationSeconds = 9,
-    enableServiceWorker = false
+    enableServiceWorker = false,
+    subscription = null // Added subscription
   } = options;
 
   const [snoozedPills, setSnoozedPills] = useState({});
@@ -17,6 +18,7 @@ export function useAlarm(pills, onPillTaken, onPillSnoozed, options = {}) {
 
   const audioRef = useRef(null);
   const activeAlarmRef = useRef(null);
+  const lastDateRef = useRef(new Date().toDateString());
 
   const stopAudio = useCallback(() => {
     const audio = audioRef.current;
@@ -174,6 +176,19 @@ export function useAlarm(pills, onPillTaken, onPillSnoozed, options = {}) {
       }
     }
 
+    // NEW: Trigger Push Notification via Vercel for 100% Reliability
+    if (subscription) {
+      fetch('/api/notify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          subscription,
+          pillName: pill.name,
+          dosage: pill.dosage
+        })
+      }).catch(err => console.error('Failed to send server-side push:', err));
+    }
+
     setTimeout(() => {
       const dosageText = pill.dosage ? ` (${pill.dosage})` : "";
       const userResponse = window.confirm(
@@ -204,7 +219,14 @@ export function useAlarm(pills, onPillTaken, onPillSnoozed, options = {}) {
   useEffect(() => {
     const interval = setInterval(() => {
       const now = new Date();
+      const today = now.toDateString();
       const currentTime = now.toTimeString().slice(0, 5);
+
+      if (lastDateRef.current !== today) {
+        setTriggeredAlarms({});
+        lastDateRef.current = today;
+        localStorage.setItem("lastAlarmResetDate", today);
+      }
 
       pills.forEach(pill => {
         if (!pill.times || !Array.isArray(pill.times)) return;
@@ -213,14 +235,15 @@ export function useAlarm(pills, onPillTaken, onPillSnoozed, options = {}) {
           if (typeof time !== 'string' || !/^\d{2}:\d{2}$/.test(time)) return;
 
           const alarmKey = `${pill.id}-${time}`;
-          const isScheduledTime = time === currentTime && !pill.takenToday;
+          const hasTriggeredToday = triggeredAlarms[alarmKey] === today;
           const isSnoozedTime = snoozedPills[pill.id] === currentTime;
-          const notTriggeredYet = triggeredAlarms[alarmKey] !== currentTime;
 
-          if ((isScheduledTime || isSnoozedTime) && notTriggeredYet) {
+          const shouldTrigger = (currentTime >= time && !hasTriggeredToday) || (isSnoozedTime && triggeredAlarms[alarmKey] !== currentTime);
+
+          if (shouldTrigger) {
             setTriggeredAlarms(prev => ({
               ...prev,
-              [alarmKey]: currentTime
+              [alarmKey]: isSnoozedTime ? currentTime : today
             }));
             triggerAlarm(pill);
           }

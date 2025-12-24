@@ -8,6 +8,7 @@ import PillList from "./PillList";
 import PillHistory from "./PillHistory";
 import "./App.css";
 import { FaHistory, FaPills } from "react-icons/fa";
+import { usePushSubscription } from "./hooks/usePushSubscription";
 
 export default function App() {
   const { pills, addPill, updatePill, deletePill, markAsTaken, unmarkAsTaken } =
@@ -23,7 +24,21 @@ export default function App() {
     unmarkAsTaken(pill.id);
   };
 
-  useAlarm(pills, handlePillTaken, handlePillSnoozed);
+  const { subscription, subscribeUser } = usePushSubscription();
+
+  useEffect(() => {
+    if ("Notification" in window) {
+      if (Notification.permission === "granted") {
+        subscribeUser();
+      } else if (Notification.permission !== "denied") {
+        Notification.requestPermission().then(permission => {
+          if (permission === 'granted') subscribeUser();
+        });
+      }
+    }
+  }, [subscribeUser]);
+
+  useAlarm(pills, handlePillTaken, handlePillSnoozed, { subscription });
 
   const [editingPill, setEditingPill] = useState(null);
   const [showHistory, setShowHistory] = useState(false);
