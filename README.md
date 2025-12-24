@@ -4,30 +4,36 @@
 
 LUNO is a modern, minimalist companion for your wellness journey. "Luna" (moon), symbolizing guidance, cycles, and care. It’s designed to be a gentle, brandable, and user-friendly reminder app that feels like a wellness companion rather than just a tool.
 
-## Features
+## Key Features
 
-- **Gentle Reminders**: Native-style notifications and calm audio cues to keep you on schedule.
-- **Pill Management**: Clean interface to manage names, dosages, and frequencies.
-- **Offline Reliability**: A Progressive Web App (PWA) that works anywhere, even without an internet connection.
-- **Dose History**: Track your consistency with an easy-to-read history log.
-- **Premium Design**: Smooth, fluid animations powered by Framer Motion.
-- **Daily Guidance**: Automatic resets to help you start every day on the right foot.
+- **100% Reliable Push Notifications**: Uses the Web Push API and Vercel Serverless Functions to ensure alerts arrive even when you're using other apps (Facebook, TikTok, etc.) or when your phone is in deep sleep.
+- **Smart "Catch-Up" Logic**: If you miss a notification while your phone is off, LUNO immediately alerts you the moment you wake it up.
+- **Multi-Dose Support**: Schedule multiple times for the same pill; each dose triggers its own independent alarm.
+- **Gentle Audio Cues**: Selection of calm audio alerts to keep you on schedule without being intrusive.
+- **Offline First**: A Progressive Web App (PWA) that maintains its core functionality even without an internet connection.
+- **Privacy Focused**: Pill data is stored locally on your device via `localStorage`.
 
 ## Tech Stack
 
 - **Frontend**: [React](https://reactjs.org/) (Vite)
+- **Backend**: [Vercel Serverless Functions](https://vercel.com/docs/functions) (Node.js)
+- **Push Engine**: [Web Push API](https://developer.mozilla.org/en-US/docs/Web/API/Push_API) & `web-push`
 - **Animations**: [Framer Motion](https://www.framer.com/motion/)
-- **Icons**: [React Icons](https://react-icons.github.io/react-icons/)
 - **PWA**: [vite-plugin-pwa](https://vite-pwa-org.netlify.app/)
-- **State Management**: Custom React Hooks (`usePills`, `useAlarm`, `usePillHistory`)
-- **Storage**: `localStorage` (Privacy-focused, local-only)
+- **Styling**: Vanilla CSS with modern Glassmorphism aesthetics.
 
-##  Getting Started
+##  Deployment & Setup
 
-### Prerequisites
+LUNO is optimized for deployment on **Vercel**.
 
-- [Node.js](https://nodejs.org/) (v18 or higher recommended)
-- `npm` or `yarn`
+### Environment Variables
+
+For the high-reliability push notifications to work, you must set the following environment variables in your Vercel or local environment:
+
+| Variable | Description |
+| :--- | :--- |
+| `VAPID_PUBLIC_KEY` | Your VAPID Public Key for Web Push. |
+| `VAPID_PRIVATE_KEY` | Your VAPID Private Key for Web Push. |
 
 ### Installation
 
@@ -42,14 +48,9 @@ LUNO is a modern, minimalist companion for your wellness journey. "Luna" (moon),
    npm install
    ```
 
-3. **Start the development server**:
+3. **Start development**:
    ```bash
    npm run dev
-   ```
-
-4. **Build for production**:
-   ```bash
-   npm run build
    ```
 
 ##  PWA Installation
