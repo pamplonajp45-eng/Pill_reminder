@@ -4,7 +4,7 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/Pill_reminder/',
+  base: process.env.VERCEL ? '/' : '/Pill_reminder/',
   plugins: [
     react({
       babel: {
