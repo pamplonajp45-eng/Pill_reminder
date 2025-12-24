@@ -24,7 +24,10 @@ export default async function handler(req, res) {
         });
 
         try {
-            await webpush.sendNotification(subscription, payload);
+            await webpush.sendNotification(subscription, payload, {
+                urgency: 'high',
+                TTL: 60 // Expire after 60 seconds if not delivered
+            });
             res.status(200).json({ success: true });
         } catch (error) {
             console.error('Error sending push:', error);

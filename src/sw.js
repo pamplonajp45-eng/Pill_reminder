@@ -19,8 +19,10 @@ self.addEventListener('push', (event) => {
         icon: data.icon || 'LUNO.png',
         badge: data.badge || 'LUNO.png',
         data: data.data || {},
-        vibrate: [200, 100, 200],
-        requireInteraction: true
+        vibrate: [500, 110, 500, 110, 450, 110, 200, 110, 170, 40, 450, 110, 200, 110, 170, 40, 500],
+        requireInteraction: true,
+        renote: true,
+        tag: 'pill-reminder'
     };
 
     event.waitUntil(
